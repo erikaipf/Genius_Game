@@ -1,0 +1,10 @@
+env
+*.pyc
+*.tmp
+*.docx
+
+remexo.wav
+bell.wav
+genius_game2.py
+first_kivy.py
+kivy_animation.py
