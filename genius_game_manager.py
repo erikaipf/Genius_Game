@@ -2,66 +2,45 @@
 Final project Hackbright Academy - by Erika Freiha - 2016
 Version 1
 
-** Genius Memory Game **
+Genius Memory Game Manager
 
-The game has four colored numbers, each producing a particular tone when it is used.
-A round in the game consists of showing one or more numbers in a random order,
-after which the player must reproduce that order by typing the numbers and pressing <Enter>.
-As the game progresses, the number of numbers to be typed increases.
-
-More info: https://en.wikipedia.org/wiki/Simon_(game)
+Info about the game: https://en.wikipedia.org/wiki/Simon_(game)
 '''
 # Import modules
-import random
+#import random
 # Import personal modules
 from genius_game_class import*
-from print_menu import show_menu_center, clean_screen
-from play_sounds import play_sound
+from print_menu import show_menu, show_info, clean_screen
+#from play_sounds import play_sound
 from color_text_screen import change_color
 
-def show_info_game(obj_game):
-	# Default 33 lines, 79 columns at screen
-	print obj_game.info_game
+#List of Players
+players_list = []
 
+def show_info_game():#obj_game):
+	# Default 33 lines, 79 columns at screen
+	show_info(game_info) #obj_game.game_info)
+	
 	raw_input("Press <Enter> to go to the Main Menu.")
 
-# def create_main_menu():
-# 	'''Create the Text for the Main Menu'''
-# 	menu = """
-# 			 +-----------------------+
-# 			 |  **  Genius Game  **  |
-# 			 +-----------------------+
-# 			 |       Main Menu       |
-# 			 +-----------------------+
-# 			 |  1 - Start Game       |
-# 			 |  2 - Show Score       |
-# 			 |  3 - Preferences      |
-# 			 +-----------------------+
-# 			 |  0 - Exit             |
-# 			 +-----------------------+
-# 		   """
-# 	return menu
+def create_main_menu():
+	'''Create the Text for the Main Menu'''
+	menu = ("\n+-----------------------+"+
+		 	"\n|  **  Genius Game  **  |"+
+		 	"\n+-----------------------+"+
+		 	"\n|       Main Menu       |"+
+		 	"\n+-----------------------+"+
+		 	"\n|  1 - Start Game       |"+
+		 	"\n|  2 - Show Scores      |"+
+			"\n|  3 - Change Players   |"+
+		 	"\n|  4 - Change Level     |"+
+		 	"\n+-----------------------+"+
+		 	"\n|  0 - Exit             |"+
+		 	"\n+-----------------------+")
+	return menu
 
-# def create_level_menu(obj_game):
-# 	'''Create the Text for the Level Menu'''
-# 	menu = ("\n+-----------------------+" +
-# 		    "\n|  **  Genius Game  **  |" +
-# 		    "\n+-----------------------+" +
-# 		    "\n|     Level Options     |" +
-# 		    "\n+-----------------------+" +
-# 		    "\n|  1 - %s|" +
-# 		    "\n|  2 - %s|" +
-# 		    "\n|  3 - %s|" +
-# 		    "\n+-----------------------+" +
-# 		    "\n|  0 - Return           |" +
-# 		    "\n+-----------------------+"
-# 		    ) % (obj_game.game_level_name(1).ljust(17),
-# 		         obj_game.game_level_name(2).ljust(17),
-# 		         obj_game.game_level_name(3).ljust(17))
-#	return menu
-
-def menu_change_level(obj_game):
-	# Create the change level menu
+def create_level_menu():
+	'''Create the Text for the Level Menu'''
 	menu = ("\n+-----------------------+" +
 		    "\n|  **  Genius Game  **  |" +
 		    "\n+-----------------------+" +
@@ -73,224 +52,262 @@ def menu_change_level(obj_game):
 		    "\n+-----------------------+" +
 		    "\n|  0 - Return           |" +
 		    "\n+-----------------------+"
-		    ) % (obj_game.game_level_name(1).ljust(17),
-		         obj_game.game_level_name(2).ljust(17),
-		         obj_game.game_level_name(3).ljust(17))
+		    ) % (game_level_name(1).ljust(17),
+		         game_level_name(2).ljust(17),
+		         game_level_name(3).ljust(17))
+	return menu
+
+def create_players_menu():
+	'''Create the Text for the Players Menu'''
+	menu = ("\n+-----------------------+"+
+		 	"\n|  **  Genius Game  **  |"+
+		 	"\n+-----------------------+"+
+		 	"\n|     Players  Menu     |"+
+		 	"\n+-----------------------+"+
+		 	"\n|  1 - Show Players     |"+
+		 	"\n|  2 - Add Player       |"+
+		 	"\n|  3 - Remove Player    |"+
+		 	"\n|  4 - Change Name      |"+
+		 	"\n+-----------------------+"+
+		 	"\n|  0 - Return           |"+
+		 	"\n+-----------------------+")
+	return menu
+
+def menu_change_level():
+	# Create the change level menu
+	level_menu = create_level_menu()
 
 	# Loop to keep showing the menu
 	while True:
 		# Show the level menu formatted and centralized
-		show_menu_center(menu)
+		# The Level Menu prints 3 lines after, so 31 lines at screen - 3 message lines = 28
+		show_menu(level_menu, empty_top_lines = 6, botton_msg_lines = 4)
 		# Level Options:
 		# 1 - Beginner
 		# 2 - Intermediate
 		# 3 - Advanced
 
 		try:
+			# Show the actual level
+			print actual_level()
 			# Change the level of the game
 			level_choice = int(raw_input("\nType the number of the level you would like to play: "))
-
-			# Verify the user choice
-			if level_choice == 0:
-				# Stop the loop, go back to Main Menu
-				break
-			elif level_choice in (1,2,3):
-				# Change the user's level
-				obj_game.game_level = level_choice
-				#obj_game.change_game_level(level_choice)
-				# Show the new level
-				print "\nLevel changed!\n%s" % (obj_game.actual_level())
-				# Stop loop, go back to Main Menu
-				break
-			else:
-				print "\nInvalid level!  Please try again."
 		except ValueError:
 			# Exception in case of empty choice or invalid number
 			print "Invalid option!  Please try again."
 
-def play_game(obj_game, p_game_level = 1):
-	# Function to play the game
-	# Set the time to play the sound
-	if p_game_level == 2:
-		v_sound_time = 1000
-	elif p_game_level == 3:
-		v_sound_time = 700
-	elif p_game_level == 4:
-		v_sound_time = 300
-	else: # for level 1 or others > 4
-		v_sound_time = 1300
-	
-	# Initialize the user score
-	v_game_score = 0
-	# Initialize the lists of sounds
-	l_sequence_sounds = []
-	l_user_sequence   = []
-	# Initialize the validation of the sequence
-	v_valid_sequence = True
-	
-	# Show the new level
-	print "\n%s" % (obj_game.actual_level())
-
-	raw_input("\nRepeat the sequence of numbers that is showing!  Are you ready?\nPress <Enter> to begin the game.")
-
-	while v_valid_sequence:
-		# Get a random number
-		v_sound_number = random.randint(1, 4)
-		# Add the number to the game sequence
-		l_sequence_sounds.append(v_sound_number)
-		print "\nSequence:",
-		# Loop to play all the sounds
-		for i in range(len(l_sequence_sounds)):
-			# Play sound (p_sound_number, p_sound_time)
-			play_sound(l_sequence_sounds[i], v_sound_time)
-
-		# Clear the screen to hide the sequence
-		clean_screen()
-		# Clean user sequence list
-		l_user_sequence = []
-		# Print a new line
-		v_user_sequence = raw_input("\nRepeat the sequence of numbers: ")
-		# Test if user sequence is right
-		if len(v_user_sequence) < 1:
-			# Change the validation
-			v_valid_sequence = False
-			# Print the message
-			print "\nEmpty sequence!\nGAME OVER!"
+		# Verify the user choice
+		if level_choice == 0:
+			# Stop the loop, go back to Main Menu
+			break
+		elif level_choice in (1,2,3):
+			# Verify if the level is the same
+			if game_level == level_choice:
+				print "\nYou are already at the selected level!"
+				# Message to pause the program for the user to read the message
+				raw_input("\nPress <Enter> to select another level.")
+			else:
+				# Change the user's level
+				change_game_level(level_choice)
+				# Show the new level
+				print "\nLevel changed!\n%s" % (actual_level())
+				# Message to pause the program for the user to read the message
+				raw_input("\nPress <Enter> to go back to Main Menu.")
+				# Stop loop, go back to Main Menu
+				break
 		else:
-			try:
-				# Verify if the user typed space between the numbers
-				if " " in v_user_sequence:
-					# Convert the sequence to a list with spaces
-					l_user_sequence = [int(i) for i in v_user_sequence.split()]	
-				else:
-					# Convert the sequence to a list without spaces
-					for v_seq in v_user_sequence:
-						l_user_sequence = l_user_sequence + [int(v_seq)]
-			except ValueError:
-				# Exception in case of invalid number
-				# Change the validation
-				v_valid_sequence = False
-				# Print the message
-				print "\nInvalid number on the sequence (%s)!\nGAME OVER!" %(v_seq)	
-			
-			# Verify if the sequence still valid
-			if v_valid_sequence:
-				# Verify if the user typed the same quantity of sounds
-				if len(l_user_sequence) > len(l_sequence_sounds):
-					# Change the validation
-					v_valid_sequence = False
-					# Print the message
-					print "\nWrong sequence!  Sequence typed is bigger than the correct sequence."
-					print "User sequence:", l_user_sequence
-					print "Game sequence:", l_sequence_sounds, "\nGAME OVER!"
-				elif len(l_user_sequence) < len(l_sequence_sounds):
-					# Change the validation
-					v_valid_sequence = False
-					# Print the message
-					print "\nWrong sequence!  Sequence typed is smaller than the correct sequence."
-					print "User sequence:", l_user_sequence
-					print "Game sequence:", l_sequence_sounds, "\nGAME OVER!"
-				else:
-					# Verify if the sequence is the same
-					if l_user_sequence == l_sequence_sounds:
-						# Right sequence
-						# Increment the score
-						v_game_score = v_game_score + 1
-						# Print the message
-						print "\nGood memory!  Let's add one more number."
-					else:
-						# Change the validation
-						v_valid_sequence = False
-						# Print the message
-						print "\nWrong sequence!"
-						print "User sequence:", l_user_sequence
-						print "Game sequence:", l_sequence_sounds, "\nGAME OVER!"
-					# old code	
-					# # Start the index number
-					# v_index_number = 0
-					# # Loop to check the user sequence
-					# for v_seq_number in l_user_sequence:
-					# 	# Verify if is a valid number
-					# 	if v_seq_number in ["1","2","3","4"]:
-					# 		# Validate the sequence number
-					# 		if l_sequence_sounds[v_index_number] == int(v_seq_number):
-					# 			# Increment the index
-					# 			v_index_number = v_index_number + 1
-					# 		else:
-					# 			# Change the validation
-					# 			v_valid_sequence = False
-					# 			# Print the message
-					# 			print "\nWrong sequence!"
-					# 			print " User sequence: [",
-					# 			for i in v_user_sequence:
-					# 				print i + ",",
-					# 			print "]\n Game sequence:", l_sequence_sounds, "\nGAME OVER!"
-								
-					# 			# Exit of the loop
-					# 			break
-					# 	else:
-					# 		# Change the validation
-					# 		v_valid_sequence = False
-					# 		print "\nInvalid number (%s) on the sequence!\nGAME OVER!" % (j)
-					# 		# Exit of the loop
-					# 		break
-					#
-					#if v_valid_sequence:
-					#	v_game_score = v_game_score + 1
+			print "\nInvalid level!"
+			# Message to pause the program for the user to read the message
+			raw_input("\nPress <Enter> to try continue.")
+
+def show_list_players():
+	'''Print the actual list of players'''
+	global players_list
+
+	# Verify how many players has the list
+	if len(players_list) == 0:
+		print "\nSorry, the list of players is empty!\nGo to option 3 - Change Players at the Main Menu."
+	elif len(players_list) == 1:
+		# Clean the screen
+		clean_screen()
+		print "\nActual player name: %s" % (players_list[0].player_name)
+	else:
+		# Clean the screen
+		clean_screen()
+		print "\nList of actual players:"
+		# Loop to read the list
+		for index in range(len(players_list)):
+			print " #%i - %s" % (index + 1, players_list[index].player_name)
+
+def player_name_exist(player_name):
+	'''Check if the name already exist'''
+	global players_list
+
+	# Verify if the name is empty
+	if len(player_name.strip(" ")) > 0 and len(players_list) > 0:
+		# Loop to check the list
+		for player_obj in players_list:
+			# Compare the names
+			if player_obj.player_name == player_name:
+				return True #player_obj
+				# stop the loop
+				break
+
+def add_player(player_name):
+	'''Add a new player for the game'''
+	global players_list
+
+	# Initialize a new player
+	new_obj_game = GeniusGame(player_name = player_name)
 	
-	if v_game_score > 0:
-		# Show user score
-		print "\nThe max number sequence you memorized was:", v_game_score
+	# Insert the player on the list
+	players_list.append(new_obj_game)
+	# Confirm the player was added
+	return True
+
+def change_game_players():
+	'''Change the players of the game'''
+	global players_list
+	
+	players_menu = create_players_menu()
+
+	while True:
+		# Show Menu formatted and centralized
+		show_menu(players_menu, empty_top_lines = 6, botton_msg_lines = 1)
+
+		try:
+			# Save the user's choice in a variable
+			menu_option = int(raw_input("Select an option from Players Menu: "))
+		except ValueError:
+			# Exception in case of empty choice or invalid number
+			print "Invalid option! Please try again."
+
+		# Verify the user options
+		if menu_option == 0:
+			# Option 0 - Return
+			# Stop loop and go back to Main Menu
+			break
+		elif menu_option == 1:
+			# Option 1 - Show Players
+			show_list_players()
+			# Message to pause the program for the user to read the message
+			raw_input("\nPress <Enter> to continue.")
+		elif menu_option == 2:
+			# Option 2 - Add Player
+			player_name = raw_input("\nType the name of the New Player or leave empty to use the default name: ")
+			
+			# Verify if the name is empty
+			if player_name.strip(" ") == "":
+				# Define the default name
+				player_name = "Player " + str(len(players_list)+1)
+				# Add a new player with a default name
+				if add_player(player_name):
+					print "\nNew player %s added!" % (player_name)
+					# Message to pause the program for the user to read the message
+					raw_input("\nPress <Enter> to continue.")
+			else:
+				# Check if the name already exist
+				if player_name_exist(player_name) == True:
+					print "\nThere is already a user called %s.  Please try another name."
+				else:
+					# Add a new player using the new name
+					if add_player(player_name):
+						print "\nNew player %s added!" % (player_name)
+						# Message to pause the program for the user to read the message
+						raw_input("\nPress <Enter> to continue.")
+		elif menu_option == 3:
+			# Option 3 - Remove Player
+			pass
+			# show_list_players()
+			
+			# player_number = int(raw_input("\nType the number of the PlayersPress <Enter> to continue."))
+
+		elif menu_option == 4:
+			# Option 4 - Change Name
+			# show_list_players()
+			# # Message to pause the program for the user to read the message
+			# raw_input("\nType the number of the PlayersPress <Enter> to continue.")
+			pass
+		else:
+			print "\nInvalid number! Please try again."
 
 def main():
-	# Initialize a new game
-	obj_game = GeniusGame()
+	global players_list
+
+	# Initialize a new player
+	add_player("Player 1")	
+
+	# Change the color of the screen and text
+	change_color(62)
 
 	# Print game info
-	show_info_game(obj_game)
+	show_info_game()
 
 	# Create the main menu
-	main_menu = ("\n+-----------------------+"+
-				 "\n|  **  Genius Game  **  |"+
-				 "\n+-----------------------+"+
-				 "\n|       Main Menu       |"+
-				 "\n+-----------------------+"+
-				 "\n|  1 - Start Game       |"+
-				 "\n|  2 - Show Score       |"+
-				 "\n|  3 - Preferences      |"+
-				 "\n+-----------------------+"+
-				 "\n|  0 - Exit             |"+
-				 "\n+-----------------------+")
+	main_menu = create_main_menu()
 
 	# Loop to keep running the code
 	while True:
 		# Show Menu formatted and centralized
-		show_menu_center(main_menu)
+		show_menu(main_menu, empty_top_lines = 6, botton_msg_lines = 1)
 
 		try:
 			# Save the user's choice in a variable
-			v_menu_option = int(raw_input("Select one option: "))
+			menu_option = int(raw_input("Select an option from Main Menu: "))
 		except ValueError:
 			# Exception in case of empty choice or invalid number
-			v_menu_option = None
+			print "\nInvalid option! Please try again."
 
 		# Verify the user options
-		if v_menu_option == 1:
-			# Option 1 - Start Game
-			play_game(g_game_level)
-		elif v_menu_option == 2:
-			# Option 2 - Change Level
-			menu_change_level()
-		# elif v_menu_option == 2:
-		# 	# Option 2 - Show Score
-		# 	# Show user score
-		# 	print "\nYour last score was:", v_game_score
-		elif v_menu_option == 0:
+		if menu_option == 0:
 			# Option 0 - Exit
+			clean_screen()
+			print "\nThank you for playing ** Genius Memory Game **!  See you again soon."
+			# Message to pause the program for the user to read the message
+			raw_input("\nPress <Enter> to finish the game.")
 			# Stop loop and finish the program
 			break
+		elif menu_option == 1:
+			# Option 1 - Start Game
+			# Verify if more players were add before
+			if len(players_list) > 1:
+				keep_players = raw_input("\nWould you like to change the players?" +
+					                     "\nType  Y  to change or any other key to start the game: ")
+				
+				if keep_players.lower() == "y":
+					change_game_players(players_list)
+			else:
+				keep_players = raw_input("\nWould you like to add players?" +
+					                     "\nType  Y  to add or any other key to start the game: ")
+				
+				if keep_players.lower() == "y":
+					change_game_players(players_list)
+
+			if len(players_list) == 0:
+				print "There are no players to start the game!  Please add players choosing the option 3 - Change Players."
+				# Message to pause the program for the user to read the message
+				raw_input("\nPress <Enter> to continue.")
+			else:
+				# Loop to start the game for each player
+				for player in players_list:
+					# Start the game										
+					player.play_game()
+		elif menu_option == 2:
+			# Option 2 - Show Scores
+			print "\nIn construction! Come back soon."
+		# 	# Show user score
+		# 	print "\nYour last score was:", v_game_score
+		elif menu_option == 3:
+			# Option 3 - Change Players
+			change_game_players()
+		elif menu_option == 4:
+			# Option 4 - Change Level
+			menu_change_level()
 		else:
-			print "Invalid option! Please try again."
+			print "\nInvalid number! Please try again."
+	
+	# Change back to black and white the color of the screen and text before finish the program
+	change_color(7)
 
 if __name__ == '__main__':
 	main()
