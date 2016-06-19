@@ -51,19 +51,22 @@ def test():
 	#text = u"Printing colored text on MS-DOS"
 	text = "Printing colored text on MS-DOS"
 	
-	# Print only one color
-	print "\n\nPrint only one color:"
-	print_one_color(text, 3)
+	# # Print only one color
+	# print "\n\nPrint only one color:"
+	# print_one_color(text, 3)
 
 	print "\n\nPrint all colors:"
 	# Loop to print all colors
-	for color_number in range(256):
+	for color_number in range(100,300): #range(256):
 		print "\nColor:", color_number
 		print_one_color(text, color_number)
 		
 	# # or Print a list of colors
-	# print "\n\nPrint a list of colors:"
-	# print_dif_colors(text, [1,3,9,2,6])
+	print "\n\nPrint a list of colors:"
+	#print_dif_colors(text, [95,159,47,79,207,223,224,240])
+	print_dif_colors(text, [159,207,223,224,240])
+	print "\n"
+	print_dif_colors(text, [159,47,207,224])
 
 if __name__ == "__main__":
 	test()

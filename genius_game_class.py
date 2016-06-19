@@ -14,21 +14,19 @@ More info: https://en.wikipedia.org/wiki/Simon_(game)
 # Import modules
 import random
 # Import personal modules
-from play_sounds import play_sound
+from play_sounds import play_sound_color
 from print_menu import clean_screen
-from color_text_screen import change_color
 
 # Initialize the variables
 game_level = 1
 correct_msg_list = ["Good memory", "Good job", "You are doing great", "Awesome", "Congratulations", "Tree cheers for"]
 game_info = ("** Genius Memory Game **" +
-			 "\n\n\nLet's use your mind?" +
-			 "\n\nThe game has four colored numbers, each producing a particular tone." +
-			 "\nA round in the game consists of showing one or more numbers in a random order," +
-	         "\nafter which the player must reproduce that order by typing the numbers" +
-	         "\nand pressing <Enter>." +
-	         "\nAs the game progresses, the number of numbers to be typed increases." +
-	         "\n\nGood Luck!")
+			 "\n\n\nAre you ready to use your mind?" +
+			 "\n\nThis is a memory game where you will be presented" +
+			 "\nwith a random sequence of colored numbers," +
+			 "\nand then you will repeat the sequence using the keybord." +
+			 "\nEach subsequent round will have a longer sequence of numbers." +
+			 "\n\nGood Luck!")
 
 def correct_seq_message():
 	global correct_msg_list
@@ -76,7 +74,15 @@ def actual_level_name():
 		return game_level_name(game_level)
 	else:
 		return "Invalid Level!"
-	
+
+
+def actual_level_number():
+	# Return the number of the actual level of the game
+	global game_level
+
+	return game_level
+
+
 def actual_level():
 	# Return the actual level of the game
 	global game_level
@@ -88,7 +94,7 @@ def actual_level():
 
 class GeniusGame(object):
 	def __init__(self, player_name = "Player 1", game_color = 62):
-		self.player_name = player_name
+		self.player_name = player_name.title()
 		#self.game_level = game_level
 		#self.sound_time = game_sound_time(game_level)
 		self.game_score = 0
@@ -159,11 +165,25 @@ class GeniusGame(object):
 
 			# Loop to play all the sounds
 			for i in range(len(game_seq_list)):
-				# Play sound (sound_number, sound_time)
-				play_sound(game_seq_list[i], sound_time)
+				# Verify the number
+				if game_seq_list[i] == 1:
+					# white background and black foreground
+					number_color = 240
+				elif game_seq_list[i] == 2:
+					# blue background and white foreground
+					number_color = 159
+				elif game_seq_list[i] == 3:
+					# red background and white foreground
+					number_color = 207
+				elif game_seq_list[i] == 4:
+					# yellow background and black foreground
+					number_color = 224
+				else:
+					number_color = self.game_color
 
-			## Change the game color back because the sounds print in a diferent color
-			#change_color(self.game_color)
+				# Play sound (sound_number, sound_time)
+				play_sound_color(game_seq_list[i], self.game_color, number_color, sound_time)
+
 			# Clean the screen to hide the sequence
 			clean_screen()
 			
@@ -183,7 +203,7 @@ class GeniusGame(object):
 			clean_screen()
 			
 			# Test if user sequence is right
-			if len(user_sequence) < 1:
+			if len(user_sequence) == 0:
 				# Change the validation
 				valid_sequence = False
 				# Print the message
@@ -204,6 +224,7 @@ class GeniusGame(object):
 					# Change the validation
 					valid_sequence = False
 					# Print the message
+					print "numero nao eh numero"
 					self.show_wrong_seq("Invalid number on the sequence!",
 						                user_seq_list, game_seq_list, game_score)
 
