@@ -14,65 +14,31 @@ from genius_game_class import*
 from print_menu import show_menu, show_info, clean_screen, show_pause_message
 from play_sounds import play_sound
 from color_text_screen import change_color
+from random import randint
 
-
-#List of Players
+# List of Players
 players_list = []
 scores_list = []
 
 
-def show_info_game():
+def show_info_game(play_sound = False):
 	# Default 33 lines, 79 columns at screen
 	# show the game info
-	show_info(game_info)
+	show_info(game_info, pause_screen = False)
 	
-	# # Play the sounds
-	# for sound_number in [2,1,4,3]:
-	# 	# Play the sound without print the number
-	# 	play_sound(sound_number, print_num_option = 3)
-
-
-# def write_score_file():
-# 	#global scores_list
-	
-# 	# Verify if exist scores at the list
-# 	if len(scores_list) > 0:
-# 		try:
-# 			# Create the file to save the scores
-# 			with open("gmg_scores.txt", "w+") as scores_file:
-# 				for scores in scores_list:
-# 					# Add scores to a file
-# 					scores_file.write(scores['player_name'] + "," + 
-# 						              scores['max_score'] + "," + 
-# 						              scores['game_level'] + '\n')
-# 		except Exception as error:
-# 			pass
-# 			#if show_message:
-# 			#	print error
-
-# def read_score_file():
-# 	#global scores_list
-	
-# 	# try:
-# 		# Read the file and add to a list (if the file already exist)
-# 	with open("gmg_scores.txt") as scores_file:
-# 		temp_list = scores_file.readlines()
-	
-# 	# Verify if there are scores on the list
-# 	if len(score_list) > 0:
-# 		# Loop to add contacts
-# 		for item in list_contacts:
-# 			## Add the contact without validate for duplicates
-# 			#add_contact_to_list(contact_obj_list, item.strip().split(',')[0], item.strip().split(',')[1], item.strip().split(',')[2], item.strip().split(',')[3], item.strip().split(',')[4], item.strip().split(',')[5])
-# 			# Check for duplicates contacts and Add the contact
-# 			add_new_contact(show_message, contact_obj_list, item.strip().split(',')[0], item.strip().split(',')[1], item.strip().split(',')[2], item.strip().split(',')[3], item.strip().split(',')[4], item.strip().split(',')[5])
-# 	else:
-# 		# Contact List from the file is empty
-# 		if show_message:
-# 			print "\nNo contacts were found."
-# 	# except Exception as error:
-# 	# 	if show_message:
-# 	# 		print error
+	# Verify if needs to play the sounds
+	if play_sound:
+		# Play the sounds
+		try:
+			for loop_number in range(40):
+				sound_number = randint(1, 4)
+				# Play the sound and show the colored number
+				play_sound_color(sound_number, game_color, sound_color[sound_number], 1000)
+		except KeyboardInterrupt:
+			pass
+	else:
+		# Show pause message to pause the screen
+		show_pause_message()
 
 
 def create_main_menu():
@@ -103,12 +69,14 @@ def create_level_menu():
 		    "\n|  1 - %s|" +
 		    "\n|  2 - %s|" +
 		    "\n|  3 - %s|" +
+		    "\n|  4 - %s|" +
 		    "\n+-----------------------+" +
 		    "\n|  0 - Return           |" +
 		    "\n+-----------------------+"
 		    ) % (game_level_name(1).ljust(17),
 		         game_level_name(2).ljust(17),
-		         game_level_name(3).ljust(17))
+		         game_level_name(3).ljust(17),
+		         game_level_name(4).ljust(17))
 	return menu
 
 
@@ -142,6 +110,7 @@ def menu_change_level():
 		# 1 - Beginner
 		# 2 - Intermediate
 		# 3 - Advanced
+		# 4 - Challenge
 
 		try:
 			# Show the actual level
@@ -156,7 +125,7 @@ def menu_change_level():
 		if level_choice == 0:
 			# Stop the loop, go back to Main Menu
 			break
-		elif level_choice in (1,2,3):
+		elif level_choice in (1,2,3,4):
 			# Verify if the level is the same
 			if actual_level_number() == level_choice:
 				show_pause_message("You are already at this level!",
@@ -359,16 +328,14 @@ def change_game_players():
 
 
 def main():
-	global players_list
-
 	# Initialize a new player
 	add_player("Player 1")
 
 	# Change the color of the screen and text
-	change_color(62)
+	change_color(game_color)
 
 	# Print game info
-	show_info_game()
+	show_info_game(True)
 
 	# Create the main menu
 	main_menu = create_main_menu()
@@ -442,7 +409,7 @@ def main():
 			show_pause_message("Invalid option! Please try again.")
 	
 	# Change back to black and white the color of the screen and text before finish the program
-	change_color(7)
+	change_color(terminal_color)
 
 
 if __name__ == '__main__':

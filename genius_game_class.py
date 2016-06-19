@@ -12,14 +12,24 @@ As the game progresses, the number of numbers to be typed increases.
 More info: https://en.wikipedia.org/wiki/Simon_(game)
 '''
 # Import modules
-import random
+from random import randint, choice
 # Import personal modules
 from play_sounds import play_sound_color
-from print_menu import clean_screen
+from print_menu import clean_screen, show_pause_message
 
 # Initialize the variables
+terminal_color = 7
+correct_msg_list = ("Good memory", "Good job", "You are doing great", "Awesome", "Congratulations", "Tree cheers for")
+screen_columns = 79  # TO DO: On Python 3 use the function to take the actual screen size
+#screen_lines = 41  # TO DO: On Python 3 use the function to take the actual screen size
+# Number 1 = white background and black foreground
+# Number 2 = blue background and white foreground
+# Number 3 = red background and white foreground
+# Number 4 = yellow background and black foreground
+sound_color = {1:240, 2:159, 3:207, 4:224}
+
 game_level = 1
-correct_msg_list = ["Good memory", "Good job", "You are doing great", "Awesome", "Congratulations", "Tree cheers for"]
+game_color = 62
 game_info = ("** Genius Memory Game **" +
 			 "\n\n\nAre you ready to use your mind?" +
 			 "\n\nThis is a memory game where you will be presented" +
@@ -28,13 +38,14 @@ game_info = ("** Genius Memory Game **" +
 			 "\nEach subsequent round will have a longer sequence of numbers." +
 			 "\n\nGood Luck!")
 
-def correct_seq_message():
-	global correct_msg_list
 
+def correct_seq_message():
 	if len(correct_msg_list) > 0:
-		return random.choice(correct_msg_list)
+		# Random function
+		return choice(correct_msg_list)
 	else:
 		return "Congratulations"
+
 
 def game_level_name(game_level):
 	# Return the name of the level
@@ -44,12 +55,15 @@ def game_level_name(game_level):
 		return "Intermediate"
 	elif game_level == 3:
 		return "Advanced"
+	elif game_level == 4:
+		return "Challenge"
+
 
 def game_sound_time(game_level):
 	# Search the time to play the sound for each level
 	if game_level == 2:
 		sound_time = 1000
-	elif game_level == 3:
+	elif game_level in (3,4):
 		sound_time = 700
 	else: # for level 1 or others > 3
 		sound_time = 1300
@@ -57,20 +71,20 @@ def game_sound_time(game_level):
 	# Return the sound time
 	return sound_time
 
+
 def change_game_level(new_level):
+	# Verify if the new level is valid
 	global game_level
 
-	# Verify if the new level is valid
-	if new_level in (1,2,3):
+	if new_level in (1,2,3,4):
 		game_level = new_level
 	else:
 		print "\nInvalid new Level!  Please try again."
 
+
 def actual_level_name():
 	# Return the name of the actual level of the game
-	global game_level
-
-	if game_level in (1,2,3):
+	if game_level in (1,2,3,4):
 		return game_level_name(game_level)
 	else:
 		return "Invalid Level!"
@@ -78,30 +92,23 @@ def actual_level_name():
 
 def actual_level_number():
 	# Return the number of the actual level of the game
-	global game_level
-
 	return game_level
 
 
 def actual_level():
 	# Return the actual level of the game
-	global game_level
-	
-	if game_level in (1,2,3):
+	if game_level in (1,2,3,4):
 		return "\nYou are at Level %i - %s." % (game_level, game_level_name(game_level))
 	else:
 		return "\nInvalid Level!"
 
+
 class GeniusGame(object):
-	def __init__(self, player_name = "Player 1", game_color = 62):
+	def __init__(self, player_name = "Player 1", game_color = game_color):
 		self.player_name = player_name.title()
-		#self.game_level = game_level
-		#self.sound_time = game_sound_time(game_level)
 		self.game_score = 0
-		self.game_color = game_color
-		self.screen_columns = 79  # TO DO: On Python 3 use the function to take the actual screen size
-		#self.screen_lines = 41  # TO DO: On Python 3 use the function to take the actual screen size
 	
+
 	def show_wrong_seq(self, message, user_seq_list, game_seq_list, game_score):
 		print "\n" + message
 		print "\nPlayer sequence:" ,
@@ -122,10 +129,9 @@ class GeniusGame(object):
 
 		print "\nGAME OVER %s!\n\n" % (self.player_name)
 
+
 	def play_game(self):
 		# Function to play the game
-		global game_level
-
 		# Set the time to play the sound
 		sound_time = game_sound_time(game_level)
 		
@@ -146,13 +152,19 @@ class GeniusGame(object):
 		       ", memorize and repeat the sequence of numbers." +
 		       "\n\nAre you ready?")
 		# Message to pause the program for the user to read the message
-		raw_input("\nPress <Enter> to start the game.")
+		show_pause_message("Press <Enter> to start the game.")
 
 		while valid_sequence:
 			# Get a random number
-			sound_number = random.randint(1, 4)
+			sound_number = randint(1, 4)
 			# Add the number to the game sequence
 			game_seq_list.append(sound_number)
+
+			if game_level == 4:
+				# Get a random number
+				sound_number = randint(1, 4)
+				# Add one more number to the game sequence
+				game_seq_list.append(sound_number)
 			
 			# Clean the screen
 			clean_screen()
@@ -165,24 +177,8 @@ class GeniusGame(object):
 
 			# Loop to play all the sounds
 			for i in range(len(game_seq_list)):
-				# Verify the number
-				if game_seq_list[i] == 1:
-					# white background and black foreground
-					number_color = 240
-				elif game_seq_list[i] == 2:
-					# blue background and white foreground
-					number_color = 159
-				elif game_seq_list[i] == 3:
-					# red background and white foreground
-					number_color = 207
-				elif game_seq_list[i] == 4:
-					# yellow background and black foreground
-					number_color = 224
-				else:
-					number_color = self.game_color
-
 				# Play sound (sound_number, sound_time)
-				play_sound_color(game_seq_list[i], self.game_color, number_color, sound_time)
+				play_sound_color(game_seq_list[i], game_color, sound_color[game_seq_list[i]], sound_time)
 
 			# Clean the screen to hide the sequence
 			clean_screen()
@@ -249,12 +245,18 @@ class GeniusGame(object):
 							# Right sequence
 							# Increment the score
 							game_score = game_score + 1
-							# Print the message
-
-							# print ("\n%s %s!  Let's add more numbers."
-							#        % (self.player_name, correct_seq_message()))
-							# # Message to pause the program for the user to read the message
-							# raw_input("\nPress <Enter> to go to the next sequence.")
+							
+							# # Verify the score
+							# if game_score > 0:
+							# 	# Print the message
+							# 	show_pause_message(correct_seq_message() + " " + self.player_name +
+							# 	              	   "!\nYou memorized " + str(game_score) +
+							# 	              	   " numbers.  Let's keep adding more numbers.")
+							# else:
+							# 	# Print the message
+							# 	show_pause_message("You get it "+ self.player_name + "!" +
+							# 					   "\nThis is the first number of your sequence. " +
+							# 	              	   "Let's add a second number.")
 						else:
 							# Change the validation
 							valid_sequence = False
@@ -262,4 +264,4 @@ class GeniusGame(object):
 							self.show_wrong_seq("Wrong sequence!", user_seq_list, game_seq_list, game_score)
 
 		# Message to pause the program for the user to read the message
-		raw_input("\nPress <Enter> to continue.")
+		show_pause_message()

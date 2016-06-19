@@ -4,7 +4,7 @@ Created by Erika Freiha | May-31-2016
 '''
 #To Do: For Python 3, use the functions to get the actual size of the screen
 # Create global string
-PAUSE_MESSAGE = "Press <Enter> to continue."
+pause_message = "Press <Enter> to continue."
 
 def clean_screen(screen_lines = 31):
 	# Only at Python 3
@@ -19,7 +19,7 @@ def clean_screen(screen_lines = 31):
 	print "\n" * screen_lines
 
 
-def show_pause_message(pause_frase = PAUSE_MESSAGE,
+def show_pause_message(pause_frase = pause_message,
 					   clean_screen_after = False):
 	'''Show the message to pause the program for the user to read the message.
 	   Adicional option to clean the screen after'''
@@ -33,7 +33,7 @@ def show_pause_message(pause_frase = PAUSE_MESSAGE,
 
 
 def show_message_with_pause(message,
-							pause_frase = PAUSE_MESSAGE,
+							pause_frase = pause_message,
 							clean_screen_after = False):
 	'''Show the message and a raw_input message after to pause before clean the screen'''
 	if len(message) > 0:
@@ -48,7 +48,7 @@ def show_info(text_info,
 			  screen_lines = 31,
 			  center_info = True,
 			  after_message_lines = 1,
-			  pause_frase = PAUSE_MESSAGE,
+			  pause_frase = pause_message,
 			  pause_screen = True):
 	'''Print the Info Centralized on the screen'''
 	# Count how many empty lines need to be printed
@@ -149,7 +149,7 @@ def show_msg_clean_screen(message, screen_lines = 31):
 		   message + "\n")
 
 	# Show a pause message for the user to read the message
-	show_pause_message(PAUSE_MESSAGE, False)
+	show_pause_message(pause_message, False)
 
 
 def test_center():
@@ -192,7 +192,7 @@ def test_original():
 
 
 if __name__ == "__main__":
-	# show_message_with_pause(message, pause_frase = PAUSE_MESSAGE, clean_screen_after = False)
+	# show_message_with_pause(message, pause_frase = pause_message, clean_screen_after = False)
 	show_message_with_pause("This is a message with a pause.")
 	show_message_with_pause("This is a message with a pause and clean the screen after.",
 	                        clean_screen_after = True)
@@ -202,7 +202,7 @@ if __name__ == "__main__":
 
 	clean_screen()
 	print "The Screen is clean now! :)"
-	# pause_message(pause_frase = PAUSE_MESSAGE, clean_screen_after = False)
+	# pause_message(pause_frase = pause_message, clean_screen_after = False)
 	show_pause_message()
 	
 	# testing menus
