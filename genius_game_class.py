@@ -16,6 +16,7 @@ from random import randint, choice
 # Import personal modules
 from play_sounds import play_sound_color
 from print_menu import clean_screen, show_pause_message
+from color_text_screen import change_color
 
 # Initialize the variables
 terminal_color = 7
@@ -30,8 +31,10 @@ sound_color = {1:240, 2:159, 3:207, 4:224}
 
 game_level = 1
 game_color = 62
-game_info = ("** Genius Memory Game **" +
-			 "\n\n\nAre you ready to use your mind?" +
+game_name = "Genius Memory Game"
+#game_info = ("** Genius Memory Game **" +
+#			 "\n\n\nAre you ready to use your mind?" +
+game_info = ("\nAre you ready to use your mind?" +
 			 "\n\nThis is a memory game where you will be presented" +
 			 "\nwith a random sequence of colored numbers," +
 			 "\nand then you will repeat the sequence using the keybord." +
@@ -114,19 +117,32 @@ class GeniusGame(object):
 		print "\nPlayer sequence:" ,
 		
 		for seq_user in user_seq_list:
+			# Change to the color number
+			change_color(sound_color[seq_user])
 			print str(seq_user),
 		
+		# Change back the color of the game
+		change_color(game_color)
 		print "\nGame sequence  :" ,
 		
 		for seq_game in game_seq_list:
+			# Change to the color number
+			change_color(sound_color[seq_game])
 			print str(seq_game),
 
+		# Change back the color of the game
+		change_color(game_color)
 		print ""
-		
-		if game_score > 0:
-			# Show user score
-			print "\nYou memorized %i numbers." % (game_score)
 
+		# Verify the score
+		if 0 < game_score < 5:
+			# Show user score
+			print "\nYou memorized a span of %i numbers!" % (game_score)
+		elif game_score >= 5:
+			# Show user score
+			print ("\n" + correct_seq_message() + " " + self.player_name +
+			       "!\nYou memorized a span of " + str(game_score) + " numbers!")
+		
 		print "\nGAME OVER %s!\n\n" % (self.player_name)
 
 
@@ -215,12 +231,10 @@ class GeniusGame(object):
 						# Convert the sequence to a list without spaces
 						for num_seq in user_sequence:
 							user_seq_list += [int(num_seq)]
-				except ValueError:
+				except Exception:
 					# Exception in case of invalid number
 					# Change the validation
 					valid_sequence = False
-					# Print the message
-					print "numero nao eh numero"
 					self.show_wrong_seq("Invalid number on the sequence!",
 						                user_seq_list, game_seq_list, game_score)
 

@@ -21,10 +21,80 @@ players_list = []
 scores_list = []
 
 
+def show_colored_game_name():
+	# Print Game Name in diferent colors
+	# Variable to change the colors of the letters
+	color_number = randint(1, 4) #1
+	# Count how many blank spaces to centralize the Game Name
+	spaces_between_text = ( (79 - len(game_name)) /5)
+	# Print the spaces before the Game Name
+	print (" " * spaces_between_text) ,
+
+	# Loop for take the letters
+	for game_letter in game_name:
+		if game_letter == " ":
+			# Change to the color of the game
+			change_color(game_color)
+		else:
+			# Change to the color number
+			change_color(sound_color[color_number])
+		# Print the colored letter
+		print game_letter + " " ,
+		# Change the color number for the next letter
+		if color_number == 4:
+			color_number = 1
+		else:
+			color_number += 1
+	# Change back the color of the game
+	change_color(game_color)
+	# Print the spaces after the Game Name
+	print "\n"
+
+
 def show_info_game(play_sound = False):
 	# Default 33 lines, 79 columns at screen
+	# # show the game info
+	# show_info(game_info, pause_screen = False)
+	
+	# # Verify if needs to play the sounds
+	# if play_sound:
+	# 	# Play the sounds
+	# 	try:
+	# 		for loop_number in range(40):
+	# 			sound_number = randint(1, 4)
+	# 			# Play the sound and show the colored number
+	# 			play_sound_color(sound_number, game_color, sound_color[sound_number], 1000)
+	# 	except KeyboardInterrupt:
+	# 		pass
+	# else:
+	# 	# Show pause message to pause the screen
+	# 	show_pause_message()
 	# show the game info
-	show_info(game_info, pause_screen = False)
+
+	# new version
+	# Print name in colors
+	# Convert the game info in a list of lines
+	list_game_info = game_info.split("\n")
+	
+	# Count how many lines between all text
+	lines_between = ( (39 - len(list_game_info) -13) /2)
+	
+	# Print lines before info
+	print ("\n" * lines_between)
+
+	# Print the Game Name in different colors
+	show_colored_game_name()
+
+	# Print the game info centralized
+	for line_info in list_game_info:
+		print line_info.center(79)
+
+	# Print the Game Name in different colors
+	print "\n"
+	show_colored_game_name()
+
+	# Print lines after info
+	print ("\n" * lines_between)
 	
 	# Verify if needs to play the sounds
 	if play_sound:
@@ -39,6 +109,27 @@ def show_info_game(play_sound = False):
 	else:
 		# Show pause message to pause the screen
 		show_pause_message()
+
+
+def show_bye_game():
+	# Option 0 - Exit
+	# Print lines before info
+	print ("\n" * 10)
+
+	# Print the Game Name in different colors
+	show_colored_game_name()
+
+	print "\n"
+	print "Thank you for playing!".center(79)
+	print "\n"
+	print "See you again soon.".center(79)
+	
+	# Print the Game Name in different colors
+	print "\n"
+	show_colored_game_name()
+
+	# Print lines after info
+	print ("\n" * 8)
 
 
 def create_main_menu():
@@ -117,7 +208,7 @@ def menu_change_level():
 			print actual_level()
 			# Change the level of the game
 			level_choice = int(raw_input("\nType the number of the level you would like to play: "))
-		except ValueError:
+		except Exception:
 			# Exception in case of empty choice or invalid number
 			level_choice = None
 
@@ -233,7 +324,7 @@ def change_game_players():
 		try:
 			# Save the user's choice in a variable
 			menu_option = int(raw_input("Select an option and press <Enter>: "))
-		except ValueError:
+		except Exception:
 			# Exception in case of empty choice or invalid number
 			menu_option = None
 
@@ -287,7 +378,7 @@ def change_game_players():
 					else:
 						# Show a pause message
 						show_pause_message("Invalid player number!  Please try again.")
-				except ValueError:
+				except Exception:
 					# Exception in case of empty choice or invalid number
 					player_number = None
 		elif menu_option == 4:
@@ -316,7 +407,7 @@ def change_game_players():
 					else:
 						# Show a pause message
 						show_pause_message("Invalid player number!  Please try again.")
-				except ValueError:
+				except Exception:
 					# Exception in case of empty choice or invalid number
 					player_number = None
 			else:
@@ -348,20 +439,29 @@ def main():
 		try:
 			# Save the user's choice in a variable
 			menu_option = int(raw_input("Select an option and press <Enter>: "))
-		except ValueError:
+
+		except Exception:
 			# Exception in case of empty choice or invalid number
 			menu_option = None
 
 		# Verify the user options
 		if menu_option == 0:
 			# Option 0 - Exit
-			clean_screen()
-			
-			# Show a pause message
-			show_info("Thank you for playing ** Genius Memory Game **!\n\nSee you again soon.",
-					  pause_frase = "Press <Enter> to finish the game.")
-			# Stop loop and finish the program
-			break
+			# clean_screen()
+			#
+			# # Show a pause message
+			# show_info("Thank you for playing ** Genius Memory Game **!\n\nSee you again soon.",
+			# 		  pause_frase = "Press <Enter> to finish the game.")
+			# # Stop loop and finish the program
+			# break
+			# new option
+			show_bye_game()
+
+			# Show pause message to pause the screen
+			show_pause_message("Press <Enter> to finish the game.")
+
+			# Stop the game
+ 			break
 		elif menu_option == 1:
 			# Option 1 - Start Game
 			# Verify if more players were add before
