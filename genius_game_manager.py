@@ -338,7 +338,7 @@ def change_game_players():
 			show_list_players(True)
 		elif menu_option == 2:
 			# Option 2 - Add Player
-			player_name = raw_input("\nType the name of the New Player or leave empty to use the default name: ")
+			player_name = raw_input("\nType the name of the New Player,\nor leave empty to use a default name: ")
 			
 			# Verify if the name is empty
 			if player_name.strip(" ") == "":
@@ -447,14 +447,6 @@ def main():
 		# Verify the user options
 		if menu_option == 0:
 			# Option 0 - Exit
-			# clean_screen()
-			#
-			# # Show a pause message
-			# show_info("Thank you for playing ** Genius Memory Game **!\n\nSee you again soon.",
-			# 		  pause_frase = "Press <Enter> to finish the game.")
-			# # Stop loop and finish the program
-			# break
-			# new option
 			show_bye_game()
 
 			# Show pause message to pause the screen
@@ -464,20 +456,6 @@ def main():
  			break
 		elif menu_option == 1:
 			# Option 1 - Start Game
-			# Verify if more players were add before
-			# if len(players_list) > 1:
-			# 	keep_players = raw_input("\nWould you like to change the players?" +
-			# 		                     "\nType  Y  to change or any other key to start the game: ")
-				
-			# 	if keep_players.lower() == "y":
-			# 		change_game_players(players_list)
-			# else:
-			# 	keep_players = raw_input("\nWould you like to add players?" +
-			# 		                     "\nType  Y  to add or any other key to start the game: ")
-				
-			# 	if keep_players.lower() == "y":
-			# 		change_game_players(players_list)
-
 			if len(players_list) == 0:
 				# No players on the list
 				# Add a player

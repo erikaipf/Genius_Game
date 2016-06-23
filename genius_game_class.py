@@ -45,7 +45,11 @@ game_info = ("\nAre you ready to use your mind?" +
 def correct_seq_message():
 	if len(correct_msg_list) > 0:
 		# Random function
-		return choice(correct_msg_list)
+		try:
+			return choice(correct_msg_list)
+		except Exception:
+			# Exception in case of some problem
+			return "Congratulations"
 	else:
 		return "Congratulations"
 
@@ -135,10 +139,10 @@ class GeniusGame(object):
 		print ""
 
 		# Verify the score
-		if 0 < game_score < 5:
+		if 0 < game_score < 3:
 			# Show user score
 			print "\nYou memorized a span of %i numbers!" % (game_score)
-		elif game_score >= 5:
+		elif game_score >= 3:
 			# Show user score
 			print ("\n" + correct_seq_message() + " " + self.player_name +
 			       "!\nYou memorized a span of " + str(game_score) + " numbers!")
